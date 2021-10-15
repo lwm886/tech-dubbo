@@ -1,0 +1,20 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+<!--
+    改为配置中心 维护zookeeper地址
+    <dubbo:registry address="zookeeper://192.168.50.133:2183?backup=192.168.50.132:2182,192.168.50.131:2181" timeout="30000"/>
+-->
+    <dubbo:config-center address="zookeeper://192.168.50.133:2183?backup=192.168.50.132:2182,192.168.50.131:2181" timeout="30000"/>
+
+    <dubbo:protocol name="http" port="8666" server="jetty"/>
+    <dubbo:protocol name="dubbo" port="12345"/>
+    <bean id="userService" class="com.tech.impl.UserServiceImpl"/>
+    <bean id="userServiceNew" class="com.tech.impl.UserServiceImplNew"/>
+    <bean id="fileService" class="com.tech.impl.FileServiceImpl"/>
+    <dubbo:service interface="com.tech.UserService" ref="userService" group="o" cluster="failsafe" protocol="dubbo"/>
+    <dubbo:service interface="com.tech.UserService" ref="userServiceNew" version="1.0" group="n" cluster="failsafe" protocol="dubbo"/>
+    <dubbo:service interface="com.tech.FileService" ref="fileService"  protocol="http" />
+</beans>
